@@ -1,0 +1,30 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Board {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  title       String
+  adminKey    String
+  notifyEmail String?
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+  posts       Post[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  content   String
+  category  String   @default("General")
+  upvotes   Int      @default(0)
+  pinned    Boolean  @default(false)
+  boardId   String
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
